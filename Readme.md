@@ -18,9 +18,28 @@ warunków przed wdrożeniem fizycznego sprzętu.
   - `Iot.Device.Bindings` (obsługa czujników)
 - **Architecture:** Inversion of Control (IoC) dla łatwej zamiany symulatora na sprzęt.
 
+## 🛠 Elementy Systemu
+
+- **Zbiornik**: Beczka 120l
+- **Czujnik poziomu wody**: JSN-SR04T (wodoodporny ultradźwiękowy)
+- **Atmosfera**: BME280
+- **Gleba**: Capacitive Soil Moisture
+- **Przetwornik ADC**: ADS1115
+- **Światło**: BH1750
+- **Sterowanie**: Moduł przekaźnika 1-kanał z Botlandu.
+- **Zasilanie**: Zasilacz do kamer 12V 5A z regulacją napięcia 4 wyjścia.
+- **Pompa wody**: Pompa membranowa serii 21 DC SFDP1-011-070-21
+- **Rozgałęźnik**: Rozgałęźnik zasilania Pulsar AWZ593 5x1A 10-30V DC
+- **Zawory**: 12V DC 1/2"
+
 ## 📈 Status Projektu
 
 - [x] Planowanie architektury
 - [ ] Implementacja silnika symulacji
 - [ ] Budowa UI
 - [ ] Integracja z RPi (Hardware)
+
+```Mermaid
+graph TD
+
+```
