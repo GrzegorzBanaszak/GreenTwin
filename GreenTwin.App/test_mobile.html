@@ -1,0 +1,39 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+<button onclick="toggleValve(1, true)">OTWÓRZ ZAWÓR 1</button>
+<button onclick="toggleValve(1, false)">ZAMKNIJ ZAWÓR 1</button>
+
+<script>
+  const connection = new signalR.HubConnectionBuilder()
+    .withUrl("http://localhost:5000/greenhouseHub") // Sprawdź czy .NET nie odpalił się na innym porcie!
+    .withAutomaticReconnect() // Doda stabilność
+    .build();
+
+  async function start() {
+    try {
+      await connection.start();
+      console.log("Połączono z SignalR!");
+    } catch (err) {
+      console.log("Błąd łączenia: ", err);
+      setTimeout(start, 5000);
+    }
+  }
+
+  // Odbieranie danych ze szklarni
+  connection.on("WaterLevelUpdated", (level) => {
+    console.log("Poziom wody w beczce: " + level.toFixed(2) + " L");
+  });
+
+  connection.on("ValveStatusChanged", (id, state) => {
+    console.log("Zawór " + id + " jest: " + (state ? "OTWARTY" : "ZAMKNIĘTY"));
+  });
+
+  async function toggleValve(id, state) {
+    if (connection.state === signalR.HubConnectionState.Connected) {
+      await connection.invoke("RequestValveToggle", id, state);
+    } else {
+      console.error("Brak połączenia z serwerem!");
+    }
+  }
+
+  start();
+</script>

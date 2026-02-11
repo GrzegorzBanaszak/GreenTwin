@@ -1,27 +1,38 @@
-﻿// See https://aka.ms/new-console-template for more information
-using GreenTwin.App.Abstractions;
+﻿using GreenTwin.App.Abstractions;
 using GreenTwin.App.Simulation;
+using GreenTwin.App.Hubs;
+using GreenTwin.App.Services; // Tu zaraz stworzymy klasę
 
-Console.WriteLine("--- GreenTwin System Rozpoczęty ---");
+var builder = WebApplication.CreateBuilder(args);
 
-// KROK 1: Wybieramy, czy używamy symulacji czy sprzętu
-IGreenhouseHardware greenhouse = new GreenhouseSimulator();
-
-// KROK 2: Prosta pętla logiki
-while (true)
+// 1. CORS - upewnij się, że porty się zgadzają z Live Serverem!
+builder.Services.AddCors(options =>
 {
-    double water = greenhouse.ReadWaterLevelLiters();
-    Console.WriteLine($"Poziom wody: {water:F1} L");
-
-    if (water < 100)
+    options.AddPolicy("AllowAll", policy =>
     {
-        Console.WriteLine("ALARM: Mało wody! Wyłączam pompę.");
-        greenhouse.SetPumpState(false);
-    }
-    else
-    {
-        greenhouse.SetPumpState(true);
-    }
+        policy.WithOrigins("http://127.0.0.1:5500", "http://localhost:5500")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 
-    Thread.Sleep(1000);
-}
+// 2. Rejestracja usług
+builder.Services.AddSingleton<IGreenhouseHardware, GreenhouseSimulator>();
+builder.Services.AddSignalR(
+    options =>
+    {
+        options.EnableDetailedErrors = true;
+    }
+);
+
+// 3. Dodanie logiki działającej w tle (nasza szklarnia)
+builder.Services.AddHostedService<GreenhouseLogicService>();
+
+var app = builder.Build();
+
+app.UseCors("AllowAll");
+
+app.MapHub<GreenhouseHub>("/greenhouseHub");
+
+app.Run();

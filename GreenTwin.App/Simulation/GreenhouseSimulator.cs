@@ -1,29 +1,46 @@
-using System;
 using GreenTwin.App.Abstractions;
 
 namespace GreenTwin.App.Simulation;
 
 public class GreenhouseSimulator : IGreenhouseHardware
 {
-    private bool _pumpOn;
+    private bool _pumpOn = false;
     private double _currentWaterInLiters = 120.0;
 
-    public double ReadTemperature() => 22.5; // Stała wartość dla testów
-    public double ReadHumidity() => 60.0;
+    // Przechowujemy stany wielu zaworów
+    private Dictionary<int, bool> _valveStates = new Dictionary<int, bool>();
+
+    public double ReadTemperature() => 24.2;
+    public double ReadHumidity() => 55.0;
+
     public double ReadWaterLevelLiters()
     {
-        if (_pumpOn) _currentWaterInLiters -= 0.1;
+        // LOGIKA SYMULACJI: 
+        // Woda ubywa tylko wtedy, gdy pompa jest włączona 
+        // ORAZ przynajmniej jeden zawór jest otwarty.
+        bool anyValveOpen = _valveStates.Values.Any(state => state == true);
+
+        if (_pumpOn && anyValveOpen)
+        {
+            // Symulujemy ubytek wody (np. 0.05 litra na każde zapytanie)
+            _currentWaterInLiters -= 0.05;
+            if (_currentWaterInLiters < 0) _currentWaterInLiters = 0;
+        }
+
         return _currentWaterInLiters;
     }
-    public double ReadSoilMoisture(int sensorId) => 45.0;
+
+    public double ReadSoilMoisture(int sensorId) => 30.0;
 
     public void SetPumpState(bool isOn)
     {
         _pumpOn = isOn;
-        Console.WriteLine($"[SIMULATOR] Pompa: {(isOn ? "WŁĄCZONA" : "WYŁĄCZONA")}");
+        Console.WriteLine($"[SIMULATOR] Pompa jest teraz: {(isOn ? "WŁĄCZONA" : "WYŁĄCZONA")}");
     }
+
     public void SetValveState(int valveId, bool isOpen)
     {
-        Console.WriteLine($"[SIMULATOR] Zawór {valveId}: {(isOpen ? "OTWARTY" : "ZAMKNIĘTY")}");
+        _valveStates[valveId] = isOpen;
+        Console.WriteLine($"[SIMULATOR] Zawór {valveId} jest teraz: {(isOpen ? "OTWARTY" : "ZAMKNIĘTY")}");
     }
 }
