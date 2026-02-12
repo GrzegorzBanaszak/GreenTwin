@@ -13,4 +13,5 @@ public interface IGreenhouseHardware
     // Wykonawstwo
     void SetPumpState(bool isOn);
     void SetValveState(int valveId, bool isOpen);
+    int ReadRawAdc(int channel);
 }

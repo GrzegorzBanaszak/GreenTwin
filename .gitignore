@@ -49,3 +49,28 @@ secrets.json
 ## --- Systemowe ---
 .DS_Store
 Thumbs.db
+
+## macOS / iOS / MacCatalyst (Xcode & DS_Store)
+.DS_Store
+DerivedData/
+*.moved-aside
+*.xcuserstate
+*.xcresult
+Ghost\ Settings.plist
+
+## Android
+.gradle/
+build/
+*.ap_
+*.apk
+*.dex
+*.keystore
+!public.keystore
+
+## Publish / Deployment
+publish/
+*.nupkg
+
+## Hot Reload & Tools
+.net/
+.dart_tool/

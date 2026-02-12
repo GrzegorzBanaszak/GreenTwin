@@ -4,12 +4,29 @@ namespace GreenTwin.App.Simulation;
 
 public class GreenhouseSimulator : IGreenhouseHardware
 {
+    private readonly Dictionary<int, int> _adcValues = new()
+    {
+        { 0, 20000 }, { 1, 20000 }, { 2, 20000 }, { 3, 20000 }
+    };
     private bool _pumpOn = false;
     private double _currentWaterInLiters = 120.0;
 
     // Przechowujemy stany wielu zaworów
     private Dictionary<int, bool> _valveStates = new Dictionary<int, bool>();
 
+    public int ReadRawAdc(int channel)
+    {
+        return _adcValues.GetValueOrDefault(channel, 0);
+    }
+
+    public void ManualUpdateAdc(int channel, int newValue)
+    {
+        if (_adcValues.ContainsKey(channel))
+        {
+            _adcValues[channel] = newValue;
+            Console.WriteLine($"[SIM-HARDWARE] Kanał ADC {channel} zmieniony na: {newValue}");
+        }
+    }
     public double ReadTemperature() => 24.2;
     public double ReadHumidity() => 55.0;
 
@@ -43,4 +60,5 @@ public class GreenhouseSimulator : IGreenhouseHardware
         _valveStates[valveId] = isOpen;
         Console.WriteLine($"[SIMULATOR] Zawór {valveId} jest teraz: {(isOpen ? "OTWARTY" : "ZAMKNIĘTY")}");
     }
+
 }
