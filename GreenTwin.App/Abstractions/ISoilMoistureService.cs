@@ -1,9 +1,13 @@
+using GreenTwin.App.Dto;
 using GreenTwin.App.Models;
 
 public interface ISoilMoistureService
 {
-    void AddSensor(SoilMoistureSensor sensor);
     IEnumerable<SoilMoistureSensor> GetAllSensors();
     SoilMoistureSensor? GetSensorById(int id);
-    double GetMoisturePercentage(int sensorId);
+    void AddSensor(CreateSoilMoistureSensor sensor);
+    bool RemoveSensor(int id);
+    double? GetSensorValue(int sensorId);
 }
+
+

@@ -1,44 +1,39 @@
 using GreenTwin.App.Abstractions;
+using GreenTwin.App.Dto;
 using GreenTwin.App.Models;
 
 namespace GreenTwin.App.Services;
 
 public class SoilMoistureService : ISoilMoistureService
 {
-    private readonly IGreenhouseHardware _hardware;
-    private readonly List<SoilMoistureSensor> _sensors = new();
+    private List<SoilMoistureSensor> _sensors = new List<SoilMoistureSensor>();
 
-    public SoilMoistureService(IGreenhouseHardware hardware)
+    public void AddSensor(CreateSoilMoistureSensor sensor)
     {
-        _hardware = hardware;
-    }
-
-    public void AddSensor(SoilMoistureSensor sensor)
-    {
-        if (string.IsNullOrWhiteSpace(sensor.Description))
-            throw new ArgumentException("Opis czujnika nie może być pusty.");
-
-        if (_sensors.Any(s => s.Id == sensor.Id))
-            throw new ArgumentException($"Czujnik o ID {sensor.Id} już istnieje.");
-
-        _sensors.Add(sensor);
+        SoilMoistureSensor newSensor = new SoilMoistureSensor(sensor.Id, sensor.Description, sensor.AdcChannel);
+        _sensors.Add(newSensor);
     }
 
     public IEnumerable<SoilMoistureSensor> GetAllSensors() => _sensors.AsReadOnly();
-
-    public SoilMoistureSensor? GetSensorById(int id) => _sensors.FirstOrDefault(s => s.Id == id);
-
-    public double GetMoisturePercentage(int sensorId)
+    public SoilMoistureSensor? GetSensorById(int id)
     {
-        var sensor = GetSensorById(sensorId)
-                     ?? throw new KeyNotFoundException($"Brak czujnika o ID {sensorId}");
+        var sensor = _sensors.FirstOrDefault(s => s.Id == id);
+        if (sensor == null)
+            return null;
+        return sensor;
+    }
 
-        int rawValue = _hardware.ReadRawAdc(sensor.AdcChannel);
+    public double? GetSensorValue(int sensorId)
+    {
+        var sensor = GetSensorById(sensorId);
+        if (sensor == null)
+            return null;
+        return sensor.GetSensorValue();
+    }
 
-        // Formuła mapowania liniowego:
-        // percentage = 100 * (Dry - Current) / (Dry - Wet)
-        double percentage = 100.0 * (sensor.RawDryValue - rawValue) / (sensor.RawDryValue - sensor.RawWetValue);
-
-        return Math.Clamp(Math.Round(percentage, 1), 0, 100);
+    public bool RemoveSensor(int id)
+    {
+        int removedCount = _sensors.RemoveAll(s => s.Id == id);
+        return removedCount > 0;
     }
 }
