@@ -1,5 +1,8 @@
 ﻿
 
+using GreenTwin.App.Application.Interfaces;
+using GreenTwin.App.Application.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. CORS - upewnij się, że porty się zgadzają z Live Serverem!
@@ -21,6 +24,9 @@ builder.Services.AddSignalR(
         options.EnableDetailedErrors = true;
     }
 );
+
+// Rejestracja serwisu aplikacyjnego jako singleton, ponieważ przechowuje stan w pamięci.
+builder.Services.AddSingleton<ISoilMoistureSensorService, SoilMoistureSensorService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

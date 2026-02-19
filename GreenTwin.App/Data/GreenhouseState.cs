@@ -1,40 +1,35 @@
+using System.Collections.Concurrent;
+
 namespace GreenTwin.App.Data;
 
-
+/// <summary>
+/// Reprezentuje "Cyfrowego Bliźniaka" szklarni, przechowując symulowany stan fizyczny.
+/// W trybie symulacji, jest to jedyne źródło prawdy dla surowych odczytów czujników.
+/// Klasa jest statyczna, aby zapewnić globalny, pojedynczy stan dla całej aplikacji.
+/// </summary>
 public static class GreenhouseState
 {
-    public static double WaterDistanceCm { get; set; } = 50.0;
-    public static double Temperature { get; set; } = 22.5;
-    public static double Humidity { get; set; } = 50.0;
+    /// <summary>
+    /// Przechowuje surowe wartości odczytów z poszczególnych kanałów ADC.
+    /// Klucz: numer kanału ADC.
+    /// Wartość: surowa wartość odczytu.
+    /// </summary>
+    public static ConcurrentDictionary<int, int> AdcRawValues { get; } = new();
 
-    // Słownik dla wartości RAW ADC (kanał -> wartość)
-    private static List<AdcSensorData> AdcChannels { get; set; } = new();
-
-    public static void AddSensorToChannel(int adcChannel, int value)
+    /// <summary>
+    /// Pobiera surową wartość dla danego kanału ADC.
+    /// Jeśli kanał nie istnieje w słowniku, zwraca 0.
+    /// </summary>
+    public static int GetAdcRawValue(int channel)
     {
-        AdcChannels.Add(new AdcSensorData(adcChannel, value));
+        return AdcRawValues.TryGetValue(channel, out var value) ? value : 0;
     }
 
-    public static double? GetSensorValue(int adcChannel)
-    {
-        var sensor = AdcChannels.FirstOrDefault(x => x.Channel == adcChannel);
-        if (sensor == null)
-            return null;
-        return sensor.Value;
-    }
-
-
-    public static bool IsPumpOn { get; set; }
-    public static Dictionary<int, bool> ValveStates { get; set; } = new();
-
+    /// <summary>
+    /// Czyści cały stan symulacji. Używane głównie w testach.
+    /// </summary>
     public static void ClearState()
     {
-        WaterDistanceCm = 50.0;
-        Temperature = 22.5;
-        Humidity = 50.0;
-        AdcChannels.Clear();
-        IsPumpOn = false;
-        ValveStates.Clear();
-
+        AdcRawValues.Clear();
     }
 }

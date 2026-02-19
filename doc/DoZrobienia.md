@@ -21,20 +21,20 @@ Niniejszy dokument zawiera specyfikację atrybutów oraz listę funkcji do zaimp
 
 ### Funkcje biznesowe
 
-- [ ] Pobieranie aktualnego stanu wilgotności w %
-- [ ] Aktualizacja opisu
+- [x] Pobieranie aktualnego stanu wilgotności w %
+- [x] Aktualizacja opisu
 - [ ] Aktualizacja pinu
-- [ ] Aktualizacja wartości kalibracji
+- [x] Aktualizacja wartości kalibracji
 
 ### Serwis sensora gleby
 
-- [ ] Możliwość pobrania listy sensorów gleby
-- [ ] Pobieranie sensora po ID
-- [ ] Dodawanie sensora do listy
-- [ ] Usuwanie sensora z listy
-- [ ] Aktualizacja opisu sensora
+- [x] Możliwość pobrania listy sensorów gleby
+- [x] Pobieranie sensora po ID
+- [x] Dodawanie sensora do listy
+- [x] Usuwanie sensora z listy
+- [x] Aktualizacja opisu sensora
 - [ ] Aktualizacja pinu sensora
-- [ ] Aktualizacja wartości kalibracji sensora
+- [x] Aktualizacja wartości kalibracji sensora
 
 ---
 

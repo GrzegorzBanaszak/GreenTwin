@@ -4,11 +4,20 @@ System inteligentnego zarządzania szklarnią oparty na .NET i Raspberry Pi.
 Projekt realizuje koncepcję "Digital Twin" – pozwala na pełną symulację
 warunków przed wdrożeniem fizycznego sprzętu.
 
-## 🚀 Główne Cele
+## 🚀 Główne Założenia
 
-- **Symulacja:** Wirtualne środowisko do testowania logiki podlewania i ogrzewania.
-- **Hardware:** Integracja z czujnikami (I2C/GPIO) na Raspberry Pi.
-- **Interfejs:** Nowoczesny panel sterowania (C# / AvaloniaUI lub WPF).
+- **Digital Twin:** Stworzenie "Cyfrowego Bliźniaka" szklarni, gdzie centralny stan (`GreenhouseState`) odzwierciedla warunki fizyczne. Umożliwia to pełną symulację i testowanie logiki sterowania (podlewanie, ogrzewanie) przed wdrożeniem na sprzęcie.
+- **Modularność i Skalowalność:** Architektura oparta na DDD (Domain-Driven Design), serwisach i kontrolerach API, ułatwiająca rozbudowę systemu o nowe czujniki i funkcje.
+- **Abstrakcja Sprzętu:** Płynne przejście z trybu symulacji na fizyczne urządzenia na Raspberry Pi dzięki zastosowaniu wstrzykiwania zależności (Inversion of Control).
+- **Automatyzacja:** Niezawodne procesy w tle (`IHostedService`) do zarządzania szklarnią bez ciągłej interakcji użytkownika.
+- **Interfejs:** Nowoczesny panel sterowania do monitorowania i zarządzania systemem.
+
+## 🏛️ Architektura
+
+1.  **Warstwa Domeny (DDD):** Każdy element (czujnik, pompa) jest modelem z własną logiką (np. `SoilSensor` przeliczający wartość RAW na %).
+2.  **Warstwa Usług (Services):** Dedykowane serwisy (np. `SoilSensorService`) zarządzają cyklem życia obiektów domenowych (CRUD).
+3.  **Warstwa API:** Kontrolery udostępniają funkcjonalność serwisów przez punkty końcowe HTTP, stanowiąc jedyny punkt wejścia dla UI.
+4.  **Silnik Symulacji:** W trybie deweloperskim, modele domenowe odczytują i zapisują swój stan do centralnego obiektu `GreenhouseState`, symulując fizyczne interakcje.
 
 ## 🛠 Tech Stack
 
@@ -16,7 +25,7 @@ warunków przed wdrożeniem fizycznego sprzętu.
 - **Platform:** Raspberry Pi (Linux ARM)
 - **Libraries:** \* `System.Device.Gpio` (sterowanie pinami)
   - `Iot.Device.Bindings` (obsługa czujników)
-- **Architecture:** Inversion of Control (IoC) dla łatwej zamiany symulatora na sprzęt.
+- **Architecture:** DDD, Services, API, Inversion of Control (IoC).
 
 ## 🛠 Elementy Systemu
 
@@ -35,11 +44,12 @@ warunków przed wdrożeniem fizycznego sprzętu.
 ## 📈 Status Projektu
 
 - [x] Planowanie architektury
-- [ ] Implementacja silnika symulacji
+- [x] Zdefiniowanie szczegółowej architektury (DDD, Digital Twin)
+- [ ] Implementacja silnika symulacji (w toku)
+- [ ] Budowa serwisów i kontrolerów API
 - [ ] Budowa UI
 - [ ] Integracja z RPi (Hardware)
 
 ```Mermaid
 graph TD
-
 ```
