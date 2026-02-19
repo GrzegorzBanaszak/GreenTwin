@@ -3,9 +3,9 @@ namespace GreenTwin.App.Data;
 
 public static class GreenhouseState
 {
-    private static double WaterLevelLiters { get; set; } = 120.0;
-    private static double Temperature { get; set; } = 22.5;
-    private static double Humidity { get; set; } = 50.0;
+    public static double WaterDistanceCm { get; set; } = 50.0;
+    public static double Temperature { get; set; } = 22.5;
+    public static double Humidity { get; set; } = 50.0;
 
     // Słownik dla wartości RAW ADC (kanał -> wartość)
     private static List<AdcSensorData> AdcChannels { get; set; } = new();
@@ -26,4 +26,15 @@ public static class GreenhouseState
 
     public static bool IsPumpOn { get; set; }
     public static Dictionary<int, bool> ValveStates { get; set; } = new();
+
+    public static void ClearState()
+    {
+        WaterDistanceCm = 50.0;
+        Temperature = 22.5;
+        Humidity = 50.0;
+        AdcChannels.Clear();
+        IsPumpOn = false;
+        ValveStates.Clear();
+
+    }
 }

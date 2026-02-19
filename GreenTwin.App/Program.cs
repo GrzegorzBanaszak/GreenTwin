@@ -1,7 +1,4 @@
-﻿using GreenTwin.App.Abstractions;
-using GreenTwin.App.Simulation;
-using GreenTwin.App.Hubs;
-using GreenTwin.App.Services; // Tu zaraz stworzymy klasę
+﻿
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +15,6 @@ builder.Services.AddCors(options =>
 });
 
 // 2. Rejestracja usług
-builder.Services.AddSingleton<IGreenhouseHardware, GreenhouseSimulator>();
 builder.Services.AddSignalR(
     options =>
     {
@@ -26,13 +22,20 @@ builder.Services.AddSignalR(
     }
 );
 
-// 3. Dodanie logiki działającej w tle (nasza szklarnia)
-builder.Services.AddHostedService<GreenhouseLogicService>();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 
 app.UseCors("AllowAll");
 
-app.MapHub<GreenhouseHub>("/greenhouseHub");
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
+app.MapControllers();
 app.Run();
