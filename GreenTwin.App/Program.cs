@@ -28,6 +28,9 @@ builder.Services.AddSignalR(
 // Rejestracja serwisu aplikacyjnego jako singleton, ponieważ przechowuje stan w pamięci.
 builder.Services.AddSingleton<ISoilMoistureSensorService, SoilMoistureSensorService>();
 
+// Rejestracja AutoMappera
+builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(Program).Assembly));
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -40,13 +40,7 @@ public class SoilMoistureSensorsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<SoilMoistureSensor>> UpdateSensor(int id, UpdateSoilMoistureSensorDto dto)
     {
-        var updatedSensor = await _sensorService.UpdateConfigurationAsync(
-            id,
-            dto.Description,
-            dto.DryValue,
-            dto.WetValue,
-            dto.MinThresholdPercentage
-        );
+        var updatedSensor = await _sensorService.UpdateConfigurationAsync(id, dto);
 
         return updatedSensor is null ? NotFound() : Ok(updatedSensor);
     }

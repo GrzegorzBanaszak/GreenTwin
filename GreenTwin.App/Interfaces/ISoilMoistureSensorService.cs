@@ -1,4 +1,5 @@
 using GreenTwin.App.Domain;
+using GreenTwin.App.Application.Dtos;
 
 namespace GreenTwin.App.Application.Interfaces;
 
@@ -13,8 +14,7 @@ public interface ISoilMoistureSensorService
 
     Task<SoilMoistureSensor> CreateAsync(string description, int adcChannel, int dryValue, int wetValue);
 
-    Task<SoilMoistureSensor?> UpdateConfigurationAsync(int id, string description, int dryValue, int wetValue,
-        double minThresholdPercentage);
+    Task<SoilMoistureSensor?> UpdateConfigurationAsync(int id, UpdateSoilMoistureSensorDto dto);
 
     Task<bool> DeleteAsync(int id);
 }

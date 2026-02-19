@@ -1,4 +1,6 @@
 using System.Collections.Concurrent;
+using AutoMapper;
+using GreenTwin.App.Application.Dtos;
 using GreenTwin.App.Application.Interfaces;
 using GreenTwin.App.Domain;
 
@@ -11,10 +13,14 @@ namespace GreenTwin.App.Application.Services;
 public class SoilMoistureSensorService : ISoilMoistureSensorService
 {
     private readonly ConcurrentDictionary<int, SoilMoistureSensor> _sensors = new();
+    private readonly IMapper _mapper;
     private int _nextId = 0;
 
-    public SoilMoistureSensorService()
+    public SoilMoistureSensorService(IMapper mapper)
     {
+        _mapper = mapper;
+
+
         // Wstępne dane do symulacji
         CreateAsync("Donica - Papryka Chili", 0, 20000, 10000);
         CreateAsync("Sekcja Północna", 1, 21500, 11000);
@@ -46,7 +52,7 @@ public class SoilMoistureSensorService : ISoilMoistureSensorService
         return Task.FromResult(sensor);
     }
 
-    public async Task<SoilMoistureSensor?> UpdateConfigurationAsync(int id, string description, int dryValue, int wetValue, double minThresholdPercentage)
+    public async Task<SoilMoistureSensor?> UpdateConfigurationAsync(int id, UpdateSoilMoistureSensorDto dto)
     {
         var sensor = await GetByIdAsync(id);
         if (sensor is null)
@@ -54,9 +60,8 @@ public class SoilMoistureSensorService : ISoilMoistureSensorService
             return null;
         }
 
-        sensor.UpdateDescription(description);
-        sensor.UpdateCalibration(dryValue, wetValue);
-        sensor.MinThresholdPercentage = minThresholdPercentage;
+        // Używamy AutoMappera do nałożenia zmian z DTO na istniejącą encję
+        _mapper.Map(dto, sensor);
 
         return sensor;
     }
