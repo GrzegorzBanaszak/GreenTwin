@@ -1,10 +1,10 @@
 using System.Collections.Concurrent;
 using AutoMapper;
-using GreenTwin.App.Application.Dtos;
-using GreenTwin.App.Application.Interfaces;
+using GreenTwin.App.Dtos;
+using GreenTwin.App.Interfaces;
 using GreenTwin.App.Domain;
 
-namespace GreenTwin.App.Application.Services;
+namespace GreenTwin.App.Services;
 
 /// <summary>
 /// Serwis do zarządzania czujnikami wilgotności gleby.
@@ -19,11 +19,22 @@ public class SoilMoistureSensorService : ISoilMoistureSensorService
     public SoilMoistureSensorService(IMapper mapper)
     {
         _mapper = mapper;
-
-
         // Wstępne dane do symulacji
-        CreateAsync("Donica - Papryka Chili", 0, 20000, 10000);
-        CreateAsync("Sekcja Północna", 1, 21500, 11000);
+        CreateAsync(new CreateSoilMoistureSensorDto
+        {
+            Description = "Pomidory",
+            AdcChannel = 1,
+            DryValue = 2000,
+            WetValue = 1000
+        });
+
+        CreateAsync(new CreateSoilMoistureSensorDto
+        {
+            Description = "Ogórki",
+            AdcChannel = 1,
+            DryValue = 2000,
+            WetValue = 1000
+        });
     }
 
     public Task<IEnumerable<SoilMoistureSensor>> GetAllAsync()
@@ -38,10 +49,10 @@ public class SoilMoistureSensorService : ISoilMoistureSensorService
         return Task.FromResult(sensor);
     }
 
-    public Task<SoilMoistureSensor> CreateAsync(string description, int adcChannel, int dryValue, int wetValue)
+    public Task<SoilMoistureSensor> CreateAsync(CreateSoilMoistureSensorDto dto)
     {
         var id = Interlocked.Increment(ref _nextId);
-        var sensor = new SoilMoistureSensor(id, description, adcChannel, dryValue, wetValue);
+        var sensor = new SoilMoistureSensor(id, dto.Description, dto.AdcChannel, dto.DryValue, dto.WetValue);
 
         if (!_sensors.TryAdd(id, sensor))
         {

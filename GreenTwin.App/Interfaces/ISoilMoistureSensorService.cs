@@ -1,7 +1,7 @@
 using GreenTwin.App.Domain;
-using GreenTwin.App.Application.Dtos;
+using GreenTwin.App.Dtos;
 
-namespace GreenTwin.App.Application.Interfaces;
+namespace GreenTwin.App.Interfaces;
 
 /// <summary>
 /// Definiuje operacje do zarządzania czujnikami wilgotności gleby.
@@ -12,7 +12,7 @@ public interface ISoilMoistureSensorService
 
     Task<SoilMoistureSensor?> GetByIdAsync(int id);
 
-    Task<SoilMoistureSensor> CreateAsync(string description, int adcChannel, int dryValue, int wetValue);
+    Task<SoilMoistureSensor> CreateAsync(CreateSoilMoistureSensorDto dto);
 
     Task<SoilMoistureSensor?> UpdateConfigurationAsync(int id, UpdateSoilMoistureSensorDto dto);
 

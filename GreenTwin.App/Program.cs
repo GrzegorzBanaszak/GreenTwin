@@ -1,7 +1,7 @@
 ﻿
 
-using GreenTwin.App.Application.Interfaces;
-using GreenTwin.App.Application.Services;
+using GreenTwin.App.Interfaces;
+using GreenTwin.App.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +27,7 @@ builder.Services.AddSignalR(
 
 // Rejestracja serwisu aplikacyjnego jako singleton, ponieważ przechowuje stan w pamięci.
 builder.Services.AddSingleton<ISoilMoistureSensorService, SoilMoistureSensorService>();
+builder.Services.AddSingleton<IWaterLevelSensorService, WaterLevelSensorService>();
 
 // Rejestracja AutoMappera
 builder.Services.AddAutoMapper(cfg => cfg.AddMaps(typeof(Program).Assembly));

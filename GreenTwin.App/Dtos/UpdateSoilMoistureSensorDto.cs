@@ -1,11 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace GreenTwin.App.Application.Dtos;
+namespace GreenTwin.App.Dtos;
 
-public class CreateSoilMoistureSensorDto
+public class UpdateSoilMoistureSensorDto
 {
     [Required] public string Description { get; set; } = string.Empty;
-    [Range(0, 3)] public int AdcChannel { get; set; }
     [Required] public int DryValue { get; set; }
     [Required] public int WetValue { get; set; }
+    [Required] public double MinThresholdPercentage { get; set; }
 }
