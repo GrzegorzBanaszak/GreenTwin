@@ -33,7 +33,7 @@ warunków przed wdrożeniem fizycznego sprzętu.
 - **Czujnik poziomu wody**: JSN-SR04T (wodoodporny ultradźwiękowy)
 - **Atmosfera**: BME280
 - **Gleba**: Capacitive Soil Moisture
-- **Przetwornik ADC**: ADS1115
+- **Przetwornik ADC**: LRS-100-12 MEAN WELL
 - **Światło**: BH1750
 - **Sterowanie**: Moduł przekaźnika 1-kanał z Botlandu.
 - **Zasilanie**: Zasilacz do kamer 12V 5A z regulacją napięcia 4 wyjścia.
@@ -50,6 +50,25 @@ warunków przed wdrożeniem fizycznego sprzętu.
 - [ ] Budowa UI
 - [ ] Integracja z RPi (Hardware)
 
+#### Struktura połaczeń elektrycznych
+
 ```Mermaid
 graph TD
+  Zasilanie[230V] --> Przetwornik[ LRS-100-12 MEAN WELL]
+  Przetwornik --> Rozgałęźnik{Pulsar AWZ593}
+  Rozgałęźnik --> Pompa
+  Rozgałęźnik --> Zawór1
+  Rozgałęźnik --> Zawór2
+  Zawór1[Zawór wody sekcja 1] --> Sterowanie
+  Zawór2[Zawór wody sekcja 2] --> Sterowanie
+  Pompa --> Sterowanie
+  Sterowanie{Moduł przekaźnika} --> Raspberry
+  CzujnikWody[Sensor poziomu wody JSN-SR04T] --> Raspberry
+  Beczka((Beczka120l))
+  CzujnikWody -.-> Beczka
+  Zasilanie --"Zasilacz Raspberry" --> Raspberry{Raspberry PI 4B}
+  Raspberry --> Gleby1[Czujnik gleby sekcja 1]
+  Raspberry --> Gleby2[Czujnik gleby sekcja 2]
+  Raspberry --> Światło[Czujnik światła BH1750]
+  Raspberry --> Atmosfera[Czujnik temperatury i wilgotności]
 ```
