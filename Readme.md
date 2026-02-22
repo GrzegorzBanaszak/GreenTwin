@@ -72,3 +72,35 @@ graph TD
   Raspberry --> Światło[Czujnik światła BH1750]
   Raspberry --> Atmosfera[Czujnik temperatury i wilgotności]
 ```
+
+# Schematy podłaczenia czujników
+
+### Pomiar poziomu wody/odległości przy użyciu JSN-SR04T i Raspberry Pi
+
+Projekt przedstawia bezpieczny sposób podłączenia wodoodpornego czujnika ultradźwiękowego **JSN-SR04T** do Raspberry Pi 4B przy użyciu konwertera poziomów logicznych.
+
+### ⚠️ Bezpieczeństwo (Kluczowa informacja)
+
+Raspberry Pi operuje na logice **3.3V**, podczas gdy czujnik JSN-SR04T wymaga zasilania **5V** i taki też sygnał wysyła na pinie ECHO. Bezpośrednie połączenie może trwale uszkodzić piny GPIO. W tym projekcie zastosowano **konwerter poziomów logicznych**, który bezpiecznie pośredniczy w komunikacji.
+
+### 🛠 Lista komponentów
+
+- **Raspberry Pi** (model 4B lub dowolny inny z GPIO)
+- **Czujnik JSN-SR04T** (wodoodporny)
+- **Konwerter poziomów logicznych** (np. Iduino ST1167 lub podobny 4-kanałowy)
+- Przewody typu jumper (męsko-męskie i żeńsko-męskie)
+- Opcjonalnie: Płytka stykowa (breadboard) lub złączki WAGO 221 do rozdzielenia zasilania.
+
+### 📐 Schemat połączenia
+
+![Schemat połączenia](img/schemat_czujnik_wody.png)
+
+### Tabela połączeń
+
+| JSN-SR04T    | Konwerter (Strona HV) | Konwerter (Strona LV) | Raspberry Pi     |
+| :----------- | :-------------------- | :-------------------- | :--------------- |
+| **5V (VCC)** | HV                    | -                     | Pin 2 (5V)       |
+| **GND**      | GND                   | -                     | Pin 6 (GND)      |
+| **TRIG**     | HV1                   | LV1                   | GPIO 17 (Pin 11) |
+| **ECHO**     | HV2                   | LV2                   | GPIO 27 (Pin 13) |
+| -            | -                     | **LV (Zasilanie)**    | Pin 1 (3.3V)     |
