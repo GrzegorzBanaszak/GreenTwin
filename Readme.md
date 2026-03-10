@@ -52,9 +52,9 @@ warunków przed wdrożeniem fizycznego sprzętu.
 
 #### Struktura połaczeń elektrycznych
 
-```Mermaid
+```mermaid
 graph TD
-  Zasilanie[230V] --> Przetwornik[ LRS-100-12 MEAN WELL]
+  Zasilanie[230V] --> Przetwornik[LRS-100-12 MEAN WELL]
   Przetwornik --> Rozgałęźnik{Pulsar AWZ593}
   Rozgałęźnik --> Pompa
   Rozgałęźnik --> Zawór1
@@ -64,9 +64,9 @@ graph TD
   Pompa --> Sterowanie
   Sterowanie{Moduł przekaźnika} --> Raspberry
   CzujnikWody[Sensor poziomu wody JSN-SR04T] --> Raspberry
-  Beczka((Beczka120l))
+  Beczka((Beczka 120l))
   CzujnikWody -.-> Beczka
-  Zasilanie --"Zasilacz Raspberry" --> Raspberry{Raspberry PI 4B}
+  Zasilanie -- "Zasilacz Raspberry" --> Raspberry{Raspberry PI 4B}
   Raspberry --> Gleby1[Czujnik gleby sekcja 1]
   Raspberry --> Gleby2[Czujnik gleby sekcja 2]
   Raspberry --> Światło[Czujnik światła BH1750]
