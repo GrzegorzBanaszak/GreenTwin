@@ -4,8 +4,8 @@ namespace GreenTwin.App.Dtos;
 
 public class UpdateSoilMoistureSensorDto
 {
-    [Required] public string Description { get; set; } = string.Empty;
-    [Required] public int DryValue { get; set; }
-    [Required] public int WetValue { get; set; }
-    [Required] public double MinThresholdPercentage { get; set; }
+    public string Description { get; set; } = string.Empty;
+    public double DryValue { get; set; }
+    public double WetValue { get; set; }
+    public double MinThresholdPercentage { get; set; }
 }

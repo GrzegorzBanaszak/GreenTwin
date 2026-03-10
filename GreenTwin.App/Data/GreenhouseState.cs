@@ -14,15 +14,20 @@ public static class GreenhouseState
     /// Klucz: numer kanału ADC.
     /// Wartość: surowa wartość odczytu.
     /// </summary>
-    public static ConcurrentDictionary<int, int> AdcRawValues { get; } = new();
+    public static List<AdcSensorData> AdcRawValues { get; } = new()
+    {
+        new AdcSensorData(0,1.90),
+        new AdcSensorData(1,1.65)
+    };
+
 
     /// <summary>
     /// Pobiera surową wartość dla danego kanału ADC.
     /// Jeśli kanał nie istnieje w słowniku, zwraca 0.
     /// </summary>
-    public static int GetAdcRawValue(int channel)
+    public static double GetAdcRawValue(int channel)
     {
-        return AdcRawValues.TryGetValue(channel, out var value) ? value : 0;
+        return AdcRawValues.FirstOrDefault(x => x.Channel == channel)?.Value ?? 0;
     }
 
     /// <summary>

@@ -12,60 +12,47 @@ namespace GreenTwin.App.Services;
 /// </summary>
 public class SoilMoistureSensorService : ISoilMoistureSensorService
 {
-    private readonly ConcurrentDictionary<int, SoilMoistureSensor> _sensors = new();
+    private readonly List<SoilMoistureSensor> _sensors = new();
     private readonly IMapper _mapper;
     private int _nextId = 0;
 
     public SoilMoistureSensorService(IMapper mapper)
     {
         _mapper = mapper;
-        // Wstępne dane do symulacji
-        CreateAsync(new CreateSoilMoistureSensorDto
-        {
-            Description = "Pomidory",
-            AdcChannel = 1,
-            DryValue = 2000,
-            WetValue = 1000
-        });
-
-        CreateAsync(new CreateSoilMoistureSensorDto
-        {
-            Description = "Ogórki",
-            AdcChannel = 1,
-            DryValue = 2000,
-            WetValue = 1000
-        });
+        _sensors.Add(new SoilMoistureSensor(1, "Pomidory", 0, 2.407, 1.12));
+        _sensors.Add(new SoilMoistureSensor(2, "Ogórki", 1, 2.407, 1.125));
     }
 
-    public Task<IEnumerable<SoilMoistureSensor>> GetAllAsync()
+    public Task<IEnumerable<SoilMoistureSensorDto>> GetAllAsync()
     {
-        var sortedSensors = _sensors.Values.OrderBy(s => s.Id);
-        return Task.FromResult<IEnumerable<SoilMoistureSensor>>(sortedSensors);
+        _sensors.ForEach(s => s.UpdateMoisture());
+
+        return Task.FromResult(_mapper.Map<IEnumerable<SoilMoistureSensorDto>>(_sensors));
     }
 
-    public Task<SoilMoistureSensor?> GetByIdAsync(int id)
+    public Task<SoilMoistureSensorDto?> GetByIdAsync(int id)
     {
-        _sensors.TryGetValue(id, out var sensor);
-        return Task.FromResult(sensor);
+        var sensor = _sensors.FirstOrDefault(s => s.Id == id);
+        return Task.FromResult(_mapper.Map<SoilMoistureSensorDto?>(sensor));
     }
 
-    public Task<SoilMoistureSensor> CreateAsync(CreateSoilMoistureSensorDto dto)
+    public Task<SoilMoistureSensorDto> CreateAsync(CreateSoilMoistureSensorDto dto)
     {
-        var id = Interlocked.Increment(ref _nextId);
-        var sensor = new SoilMoistureSensor(id, dto.Description, dto.AdcChannel, dto.DryValue, dto.WetValue);
 
-        if (!_sensors.TryAdd(id, sensor))
+
+        if (_sensors.Any(s => s.AdcChannel == dto.AdcChannel))
         {
             // W praktyce nie powinno się zdarzyć przy użyciu Interlocked
-            throw new InvalidOperationException("Nie udało się dodać czujnika z powodu konfliktu ID.");
+            throw new InvalidOperationException("Pod ten kanał ADC już jest przypisany czujnik.");
         }
-
-        return Task.FromResult(sensor);
+        var id = Interlocked.Increment(ref _nextId);
+        var sensor = new SoilMoistureSensor(id, dto.Description, dto.AdcChannel, dto.DryValue, dto.WetValue);
+        return Task.FromResult(_mapper.Map<SoilMoistureSensorDto>(sensor));
     }
 
-    public async Task<SoilMoistureSensor?> UpdateConfigurationAsync(int id, UpdateSoilMoistureSensorDto dto)
+    public async Task<SoilMoistureSensorDto?> UpdateConfigurationAsync(int id, UpdateSoilMoistureSensorDto dto)
     {
-        var sensor = await GetByIdAsync(id);
+        var sensor = _sensors.FirstOrDefault(s => s.Id == id);
         if (sensor is null)
         {
             return null;
@@ -74,11 +61,14 @@ public class SoilMoistureSensorService : ISoilMoistureSensorService
         // Używamy AutoMappera do nałożenia zmian z DTO na istniejącą encję
         _mapper.Map(dto, sensor);
 
-        return sensor;
+
+        return _mapper.Map<SoilMoistureSensorDto>(sensor);
     }
 
     public Task<bool> DeleteAsync(int id)
     {
-        return Task.FromResult(_sensors.TryRemove(id, out _));
+        int index = _sensors.RemoveAll(s => s.Id == id);
+        return Task.FromResult(index > 0);
+
     }
 }

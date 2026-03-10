@@ -10,6 +10,8 @@ public class MappingProfile : Profile
     {
         CreateMap<CreateSoilMoistureSensorDto, SoilMoistureSensor>();
         CreateMap<UpdateSoilMoistureSensorDto, SoilMoistureSensor>();
+        CreateMap<SoilMoistureSensor, SoilMoistureSensorDto>();
+
 
         CreateMap<CreateWaterLevelSensorDto, WaterLevelSensor>();
         CreateMap<UpdateWaterLevelSensorDto, WaterLevelSensor>();
