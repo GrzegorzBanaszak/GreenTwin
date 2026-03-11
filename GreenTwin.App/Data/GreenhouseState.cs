@@ -14,14 +14,10 @@ public static class GreenhouseState
     /// Klucz: numer kanału ADC.
     /// Wartość: surowa wartość odczytu.
     /// </summary>
-    public static List<AdcSensorData> AdcRawValues { get; } = new()
-    {
-        new AdcSensorData(0,1.90),
-        new AdcSensorData(1,1.65)
-    };
+    public static List<AdcSensorData> AdcRawValues { get; } = new();
 
 
-    /// <summary>
+    /// <summary> 
     /// Pobiera surową wartość dla danego kanału ADC.
     /// Jeśli kanał nie istnieje w słowniku, zwraca 0.
     /// </summary>
@@ -30,6 +26,16 @@ public static class GreenhouseState
         return AdcRawValues.FirstOrDefault(x => x.Channel == channel)?.Value ?? 0;
     }
 
+    public static void SeedAdcSensorData()
+    {
+        ClearState();
+        AdcRawValues.Add(new AdcSensorData(0, 1.90));
+        AdcRawValues.Add(new AdcSensorData(1, 1.65));
+    }
+    public static void AddAdcRawValue(int channel, double value)
+    {
+        AdcRawValues.Add(new AdcSensorData(channel, value));
+    }
     /// <summary>
     /// Czyści cały stan symulacji. Używane głównie w testach.
     /// </summary>

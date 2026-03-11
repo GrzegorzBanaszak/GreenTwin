@@ -8,8 +8,8 @@ public class SoilMoistureSensor
     public int Id { get; }
     public string Description { get; private set; }
     public int AdcChannel { get; }
-    private double DryValue { get; set; }
-    private double WetValue { get; set; }
+    public double DryValue { get; private set; }
+    public double WetValue { get; private set; }
     public double MinThresholdPercentage { get; set; }
 
     // --- Stan ---
@@ -49,7 +49,7 @@ public class SoilMoistureSensor
     /// <summary>
     /// Aktualizuje wartości kalibracyjne czujnika.
     /// </summary>
-    public void UpdateCalibration(int? dryValue, int? wetValue)
+    public void UpdateCalibration(double? dryValue, double? wetValue)
     {
         if (dryValue <= wetValue)
         {
